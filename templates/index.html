@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🚢 Titanic Survival Prediction System</h1>
+                <p>Predict passenger survival using Machine Learning</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="form-section">
+                <h2>Passenger Information</h2>
+                <form id="predictionForm">
+                    <!-- Passenger Class -->
+                    <div class="form-group">
+                        <label for="Pclass">Passenger Class:</label>
+                        <select id="Pclass" name="Pclass" required>
+                            <option value="">-- Select Class --</option>
+                            <option value="1">1st Class (Upper)</option>
+                            <option value="2">2nd Class (Middle)</option>
+                            <option value="3">3rd Class (Lower)</option>
+                        </select>
+                        <small>Social class aboard the Titanic</small>
+                    </div>
+
+                    <!-- Sex -->
+                    <div class="form-group">
+                        <label for="Sex">Sex:</label>
+                        <select id="Sex" name="Sex" required>
+                            <option value="">-- Select Sex --</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        <small>Passenger gender</small>
+                    </div>
+
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="Age">Age (years):</label>
+                        <input type="number" id="Age" name="Age" min="0" max="120" step="0.1" 
+                               placeholder="Enter age" required>
+                        <small>Age in years (0-120)</small>
+                    </div>
+
+                    <!-- Siblings/Spouses -->
+                    <div class="form-group">
+                        <label for="SibSp">Siblings/Spouses Aboard:</label>
+                        <input type="number" id="SibSp" name="SibSp" min="0" max="10" 
+                               placeholder="0" required>
+                        <small>Number of siblings or spouses traveling with passenger</small>
+                    </div>
+
+                    <!-- Fare -->
+                    <div class="form-group">
+                        <label for="Fare">Ticket Fare (£):</label>
+                        <input type="number" id="Fare" name="Fare" min="0" step="0.01" 
+                               placeholder="0.00" required>
+                        <small>Ticket price in British pounds</small>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="predictBtn">
+                            <span class="btn-text">Predict Survival</span>
+                            <span class="btn-loader" style="display:none;">Loading...</span>
+                        </button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2>Prediction Result</h2>
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <h3 id="resultTitle"></h3>
+                        <div class="confidence-badge" id="confidenceBadge"></div>
+                    </div>
+
+                    <div class="result-body">
+                        <div class="probability-row">
+                            <span class="label">Survived:</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill survived" id="survivedProb"></div>
+                            </div>
+                            <span class="percentage" id="survivedPercent"></span>
+                        </div>
+
+                        <div class="probability-row">
+                            <span class="label">Did Not Survive:</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill not-survived" id="notSurvivedProb"></div>
+                            </div>
+                            <span class="percentage" id="notSurvivedPercent"></span>
+                        </div>
+                    </div>
+
+                    <div class="result-footer">
+                        <h4>Input Features:</h4>
+                        <div class="features-grid" id="featuresGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="alert alert-error" id="errorAlert" style="display: none;">
+                <span class="alert-close" onclick="this.parentElement.style.display='none';">&times;</span>
+                <strong>Error:</strong> <span id="errorMessage"></span>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <h3>About This Project</h3>
+                <p>
+                    This application uses a <strong>Random Forest Classifier</strong> to predict whether a passenger 
+                    survived the Titanic disaster based on their characteristics. The model was trained on 
+                    historical Titanic passenger data.
+                </p>
+                <p>
+                    <strong>Features Used:</strong> Passenger Class, Sex, Age, Siblings/Spouses, and Ticket Fare
+                </p>
+                <p>
+                    <strong>Target Variable:</strong> Survived (Yes/No)
+                </p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Titanic Survival Prediction System | Machine Learning Project</p>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const errorAlert = document.getElementById('errorAlert');
+        const predictBtn = document.getElementById('predictBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide previous results and errors
+            resultsSection.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            // Show loading state
+            predictBtn.disabled = true;
+            document.querySelector('.btn-text').style.display = 'none';
+            document.querySelector('.btn-loader').style.display = 'inline';
+
+            try {
+                // Get form data
+                const formData = {
+                    Pclass: document.getElementById('Pclass').value,
+                    Sex: document.getElementById('Sex').value,
+                    Age: parseFloat(document.getElementById('Age').value),
+                    SibSp: parseInt(document.getElementById('SibSp').value),
+                    Fare: parseFloat(document.getElementById('Fare').value)
+                };
+
+                // Send POST request to /predict endpoint
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Prediction failed');
+                }
+
+                // Display results
+                displayResults(result);
+
+            } catch (error) {
+                displayError(error.message);
+            } finally {
+                // Reset button state
+                predictBtn.disabled = false;
+                document.querySelector('.btn-text').style.display = 'inline';
+                document.querySelector('.btn-loader').style.display = 'none';
+            }
+        });
+
+        function displayResults(data) {
+            const { prediction, confidence, probabilities, input_features } = data;
+
+            // Update result title
+            const resultTitle = document.getElementById('resultTitle');
+            const confidenceBadge = document.getElementById('confidenceBadge');
+            
+            if (prediction === 'Survived') {
+                resultTitle.textContent = '✓ Passenger Survived';
+                resultTitle.className = 'survived-title';
+                confidenceBadge.className = 'confidence-badge survived-badge';
+            } else {
+                resultTitle.textContent = '✗ Passenger Did Not Survive';
+                resultTitle.className = 'not-survived-title';
+                confidenceBadge.className = 'confidence-badge not-survived-badge';
+            }
+
+            confidenceBadge.innerHTML = `<strong>${confidence}%</strong> Confidence`;
+
+            // Update probability bars
+            document.getElementById('survivedPercent').textContent = `${probabilities.Survived}%`;
+            document.getElementById('notSurvivedPercent').textContent = `${probabilities['Did Not Survive']}%`;
+            
+            document.getElementById('survivedProb').style.width = `${probabilities.Survived}%`;
+            document.getElementById('notSurvivedProb').style.width = `${probabilities['Did Not Survive']}%`;
+
+            // Display input features
+            const featuresGrid = document.getElementById('featuresGrid');
+            featuresGrid.innerHTML = `
+                <div class="feature-item"><strong>Class:</strong> ${input_features.Pclass}</div>
+                <div class="feature-item"><strong>Sex:</strong> ${input_features.Sex}</div>
+                <div class="feature-item"><strong>Age:</strong> ${input_features.Age} years</div>
+                <div class="feature-item"><strong>SibSp:</strong> ${input_features.SibSp}</div>
+                <div class="feature-item"><strong>Fare:</strong> £${input_features.Fare.toFixed(2)}</div>
+            `;
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayError(message) {
+            errorAlert.style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

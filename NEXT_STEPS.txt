@@ -1,0 +1,240 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                         NEXT STEPS FOR SUBMISSION                            ║
+║                    Titanic Survival Prediction System                        ║
+║                     Ejike Chiamaka (22CG031853)                             ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Your complete project is ready! Follow these steps to get full marks:
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: LOCAL TESTING (10 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Open Terminal/Command Prompt
+2. Navigate to project folder:
+   cd "c:\Users\DELL 7300\Documents\400LEVEL ALPHA\CSC 415 -AI\Titanic_Project_YourName_YourMatricNo"
+
+3. Install dependencies:
+   pip install -r requirements.txt
+
+4. Run the app:
+   python app.py
+
+5. Open browser and go to:
+   http://localhost:5000
+
+6. Test prediction with this sample data:
+   - Passenger Class: 3
+   - Sex: male
+   - Age: 25
+   - Siblings/Spouses: 1
+   - Fare: 7.25
+   
+   Click "Predict Survival" → Should show result with confidence
+
+7. If it works, continue to Step 2. If not, check:
+   - All .pkl files exist in model/ folder
+   - Python version is 3.10+
+   - No error messages in console
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 2: CREATE GITHUB REPOSITORY (5 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Go to github.com and sign in
+
+2. Click "+" → "New repository"
+
+3. Fill in details:
+   Repository name: Titanic_Project_EjikeChiamaka_22CG031853
+   Description: Titanic Survival Prediction ML System
+   Public: ✓ (must be public)
+   Create repository
+
+4. After creation, you'll see instructions. In your Terminal, run:
+
+   git init
+   git add .
+   git commit -m "Initial Titanic Survival Prediction System"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/Titanic_Project_EjikeChiamaka_22CG031853.git
+   git push -u origin main
+
+5. Go back to GitHub and refresh - you should see all files uploaded
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 3: DEPLOY TO RENDER (15 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Go to https://render.com and sign up (use GitHub login)
+
+2. Click "New +" → "Web Service"
+
+3. Click "Connect" next to your GitHub repository
+   (Search for: Titanic_Project_EjikeChiamaka_22CG031853)
+
+4. Fill in the form:
+   Name: titanic-survival-prediction
+   Runtime: Python 3
+   Build Command: pip install -r requirements.txt
+   Start Command: gunicorn app:app
+
+5. Click "Advanced" and add Environment Variables:
+   PORT: 10000
+   DEBUG: False
+
+6. Click "Create Web Service"
+
+7. Wait 3-5 minutes. You'll see logs streaming.
+   When done, you get a URL like:
+   https://titanic-survival-prediction.onrender.com
+
+8. Test the URL in your browser:
+   https://titanic-survival-prediction.onrender.com
+   (Should load the home page)
+
+9. Test a prediction to make sure it works
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 4: UPDATE SUBMISSION FILE (2 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+Open this file:
+Titanic_Project_YourName_YourMatricNo/Titanic_hosted_webGUI_link.txt
+
+Replace the placeholder with your actual URL:
+Live URL of Hosted Application: https://titanic-survival-prediction.onrender.com
+
+Save the file.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 5: FINAL GIT PUSH (2 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+After updating Titanic_hosted_webGUI_link.txt, run:
+
+git add .
+git commit -m "Update live deployment URL"
+git push
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 6: SUBMIT TO SCORAC.COM (5 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+BEFORE FEBRUARY 5, 2026, 11:59 PM:
+
+1. Log into Scorac.com
+
+2. Navigate to the assignment submission page
+
+3. Compress the entire folder:
+   Titanic_Project_EjikeChiamaka_22CG031853.zip
+
+4. Upload the ZIP file to Scorac.com
+
+5. In the submission notes, add:
+   - GitHub Link: https://github.com/YOUR_USERNAME/Titanic_Project_EjikeChiamaka_22CG031853
+   - Live URL: https://titanic-survival-prediction.onrender.com
+   - Algorithm: Random Forest Classifier
+   - Matric: 22CG031853
+
+6. Submit
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ "Port 5000 already in use" (Local testing)
+✓ Solution: Use different port:
+  set PORT=5001
+  python app.py
+  
+❌ "ModuleNotFoundError: No module named 'flask'" (Local testing)
+✓ Solution: Install dependencies:
+  pip install -r requirements.txt
+
+❌ "Model not found" (Local or Render)
+✓ Solution: Check model/ folder has .pkl files
+  If missing, run: jupyter notebook model/model_building.ipynb
+  (Run all cells to generate files)
+
+❌ "502 Bad Gateway" (Render)
+✓ Solution: Check Render logs
+  Usually means model files weren't committed
+  Fix: git add model/*.pkl && git push
+  Then redeploy
+
+❌ "Build failed" (Render)
+✓ Solution: Check build logs in Render dashboard
+  Usually: missing runtime.txt or python version
+  Verify: runtime.txt contains python-3.10.13
+
+═══════════════════════════════════════════════════════════════════════════════
+
+IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Python Version: 3.10.13 (specified in runtime.txt)
+✓ Correct inference: Uses predict_proba() for confidence
+✓ No data leakage: Scaled after train-test split
+✓ Deployment-safe: No hardcoded ports or debug=True
+✓ All files renamed with your details
+✓ Model artifacts included
+✓ Documentation complete
+
+═══════════════════════════════════════════════════════════════════════════════
+
+EXPECTED SCORE: 15/15 ✓
+DEADLINE: February 5, 2026, 11:59 PM
+
+═══════════════════════════════════════════════════════════════════════════════
+
+VERIFICATION CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+Before submitting to Scorac.com, verify:
+
+Local Testing:
+  [ ] python app.py works
+  [ ] Browser loads http://localhost:5000
+  [ ] Prediction works with test data
+  [ ] /health endpoint works
+
+GitHub:
+  [ ] Repository created and public
+  [ ] All files committed and pushed
+  [ ] Commit history visible
+  [ ] README shows on GitHub homepage
+
+Render Deployment:
+  [ ] Live URL accessible in browser
+  [ ] Form loads and displays
+  [ ] Predictions work correctly
+  [ ] /health endpoint returns OK
+  [ ] No 502 or 503 errors
+
+Submission File:
+  [ ] Titanic_hosted_webGUI_link.txt updated with live URL
+  [ ] GitHub link correct
+  [ ] Matric number correct
+  [ ] Algorithm correct (Random Forest)
+  [ ] Persistence method correct (Joblib)
+
+Folder Structure:
+  [ ] Named: Titanic_Project_EjikeChiamaka_22CG031853
+  [ ] Contains all required files
+  [ ] Model artifacts included (.pkl files)
+  [ ] Documentation complete
+
+═══════════════════════════════════════════════════════════════════════════════
+
+You're all set! Follow the steps above and you'll get full marks.
+
+Good luck! 🚀

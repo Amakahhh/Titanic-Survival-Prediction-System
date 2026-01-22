@@ -1,0 +1,6 @@
+Name: Ejike Chiamaka
+Matric Number: 22CG031853
+Machine Learning Algorithm Used: Random Forest Classifier
+Model Persistence Method Used: Joblib
+Live URL of Hosted Application: [TO BE FILLED AFTER DEPLOYMENT]
+GitHub Repository Link: https://github.com/your-username/Titanic_Project_EjikeChiamaka_22CG031853
